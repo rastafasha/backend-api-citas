@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Staff;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -22,10 +23,14 @@ class StaffsController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
-        $users = User::where("name", "like", "%".$search."%")
-                    ->orWhere("surname", "like", "%".$search."%")
-                    ->orWhere("email", "like", "%".$search."%")
+        $users = User::where(DB::raw("CONCAT(users.name,' ',IFNULL(users.surname,''),' ',users.email)"),"like","%".$search."%")
+                    // "name", "like", "%".$search."%"
+                    // ->orWhere("surname", "like", "%".$search."%")
+                    // ->orWhere("email", "like", "%".$search."%")
                     ->orderBy("id", "desc")
+                    ->whereHas("roles", function($q){
+                        $q->where("name","not like","%DOCTOR%");
+                    })
                     ->get();
                     
         return response()->json([
@@ -35,7 +40,7 @@ class StaffsController extends Controller
     }
     public function config()
     {
-        $roles = Role::all();
+        $roles = Role::where("name","not like","%DOCTOR%")->get();
 
         return response()->json([
             "roles" => $roles,

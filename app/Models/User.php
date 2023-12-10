@@ -6,14 +6,16 @@ use Carbon\Carbon;
 use App\Traits\HavePermission;
 use App\Jobs\NewUserRegisterJob;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Doctor\Specialitie;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\Doctor\DoctorScheduleDay;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Models\Role;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -34,16 +36,16 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'rolename',
-
         //staff
         'surname',
-        'phone',
+        'mobile',
         'birth_date',
         'gender',
         'education',
         'designation',
         'address',
         'avatar',
+        'speciality_id',
 
     ];
 
@@ -70,12 +72,12 @@ class User extends Authenticatable implements JWTSubject
     const GUEST = 'GUEST';
 
     // public function setCreateAttribute($value){
-    //     date_default_timezone_set("America/Venezuela"); 
+    //     date_default_timezone_set("America/Caracas"); 
     //     $this->attribute['created_at']= Carbon::now();
     // }
 
     // public function setUpdateAttribute($value){
-    //     date_default_timezone_set("America/Venezuela"); 
+    //     date_default_timezone_set("America/Caracas"); 
     //     $this->attribute['updated_at']= Carbon::now();
     // }
 
@@ -114,10 +116,15 @@ class User extends Authenticatable implements JWTSubject
 
 
 
-    // public function roles()
-    // {
-    //     return $this->hasMany(Role::class, 'id');
-    // }
+    public function speciality()
+    {
+        return $this->belongsTo(Specialitie::class);
+    }
+
+    public function schedule_days()
+    {
+        return $this->hasMany(DoctorScheduleDay::class);
+    }
     
 
 
