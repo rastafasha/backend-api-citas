@@ -1,24 +1,22 @@
 <?php
 
-namespace App\Models\Doctor;
+namespace App\Models\Appointment;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Specialitie extends Model
+class AppointmentPay extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'state',
+    protected $fillable=[
+        "appointment_id",
+        "amount",
+        "method_payment",
+        // "amount_add",
+
     ];
 
     public function setCreatedAtAttribute($value)

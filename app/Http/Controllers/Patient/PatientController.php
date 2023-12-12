@@ -25,9 +25,11 @@ class PatientController extends Controller
 
         $patients = Patient::where(DB::raw("CONCAT(patients.name,' ', IFNULL(patients.surname,''),' ',patients.email)"),
         "like","%".$search."%"
-        )->orderBy("id", "desc")->paginate(30);
+        )->orderBy("id", "desc")
+        ->paginate(2);
                     
         return response()->json([
+            "total" =>$patients->total(),
             "patients" => PatientCollection::make($patients),
             
         ]);          
@@ -65,9 +67,10 @@ class PatientController extends Controller
             $request->request->add(["avatar"=>$path]);
         }
 
-        $date_clean = preg_replace('/\(.*\)|[A-Z]{3}-\d{4}/', '',$request->birth_date );
-
-        $request->request->add(["birth_date" => Carbon::parse($date_clean)->format('Y-m-d h:i:s')]);
+        if($request->birth_date){
+            $date_clean = preg_replace('/\(.*\)|[A-Z]{3}-\d{4}/', '',$request->birth_date );
+            $request->request->add(["birth_date" => Carbon::parse($date_clean)->format('Y-m-d h:i:s')]);
+        }
 
         $patient = Patient::create($request->all());
 
@@ -135,17 +138,18 @@ class PatientController extends Controller
             $request->request->add(["avatar"=>$path]);
         }
         
-        $date_clean = preg_replace('/\(.*\)|[A-Z]{3}-\d{4}/', '',$request->birth_date );
-        
-        $request->request->add(["birth_date" => Carbon::parse($date_clean)->format('Y-m-d h:i:s')]);
-
+        if($request->birth_date){
+            $date_clean = preg_replace('/\(.*\)|[A-Z]{3}-\d{4}/', '',$request->birth_date );
+            $request->request->add(["birth_date" => Carbon::parse($date_clean)->format('Y-m-d h:i:s')]);
+        }
         $patient->update($request->all());
 
         if($patient->person){
             $patient->person->update($request->all());
         }
         return response()->json([
-            "message"=>200
+            "message"=>200,
+            "patient"=>$patient
         ]);
     }
 
