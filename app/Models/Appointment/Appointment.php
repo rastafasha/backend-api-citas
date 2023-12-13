@@ -56,7 +56,8 @@ class Appointment extends Model
     }
     
     public function doctor_schedule_join_hour()
-    {
+    {   
+        // ->withTrased();
         return $this->belongsTo(DoctorScheduleJoinHour::class);
     }
 
@@ -89,6 +90,34 @@ class Appointment extends Model
 
         if($date){
             $query->whereDate("date_appointment", Carbon::parse($date)->format("Y-m-d"));
+        }
+        return $query;
+    }
+    public function scopefilterAdvancePay($query,$speciality_id, $search_doctor, $search_patient,
+    $date_start,$date_end){
+        
+        if($speciality_id){
+            $query->where("speciality_id", $speciality_id);
+        }
+
+        if($search_doctor){
+            $query->whereHas("doctor", function($q)use($search_doctor){
+                $q->where("name", "like","%".$search_doctor."%")
+                    ->orWhere("surname", "like","%".$search_doctor."%");
+            });
+        }
+        if($search_patient){
+            $query->whereHas("patient", function($q)use($search_patient){
+                $q->where("name", "like","%".$search_patient."%")
+                    ->orWhere("surname", "like","%".$search_patient."%");
+            });
+        }
+
+        if($date_start && $date_end){
+            $query->whereBetween("date_appointment", [
+                Carbon::parse($date_start)->format("Y-m-d"),
+                Carbon::parse($date_end)->format("Y-m-d"),
+            ]);
         }
         return $query;
     }

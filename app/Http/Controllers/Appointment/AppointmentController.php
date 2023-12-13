@@ -48,6 +48,8 @@ class AppointmentController extends Controller
         DB::statement("SET lc_time_names = 'es_ES'");
 
         $name_day = Carbon::parse($date_appointment)->dayName;
+        //consulta para saber que doctor cumple con la disponibilidad de atencion tendiendo en cuenta
+        //el dia, hora y especialidad
         $doctor_query = DoctorScheduleDay::where("day","like","%".$name_day."%")
                         ->whereHas("doctor", function($q) use($speciality_id){
                             $q->where("speciality_id", $speciality_id);
@@ -58,14 +60,16 @@ class AppointmentController extends Controller
                             });
                         })->get();
         $doctors = collect([]);   
+        //iteramos entre los doctores que resultaron de la consulta
         foreach ($doctor_query as $key => $doctor_q) {
-            
+            //revisamos su disponibilidad para arrojar los segmentos de la hora, en intervalos de 15 min
             $segments = DoctorScheduleJoinHour::where("doctor_schedule_day_id",$doctor_q->id)
                                                 ->whereHas("doctor_schedule_hour",function($q)use($hour){
                                                     $q->where("hour", $hour);
                                                 })->get();
-
+             //armamos una lista de doctores con los segmentos de su hora(marcamos cuales se encuentran ocupados)                                   
             $doctors->push([
+                //datos del doctor
                 "doctor"=>[
                     "id"=> $doctor_q->doctor->id,
                     "full_name"=> $doctor_q->doctor->name.' '.$doctor_q->doctor->surname,
@@ -74,7 +78,9 @@ class AppointmentController extends Controller
                         "name"=>$doctor_q->doctor->speciality->name,
                     ],
                 ],
+                //datos del segmento en un formato para el frontend
                 "segments" => $segments->map(function($segment)use($date_appointment){
+                    //aca podemos averiguar si el segmento ya se encuentra ocupado por otra cita medica
                     $appointment = Appointment::where("doctor_schedule_join_hour_id", $segment->id)
                                                 ->whereDate("date_appointment", Carbon::parse($date_appointment)->format("Y-m-d"))
                                                 ->first();
@@ -232,7 +238,7 @@ class AppointmentController extends Controller
 
         return response()->json([
             "message" => 200,
-            "appointment"=>$appointment
+            
         ]);
     }
 
@@ -275,7 +281,7 @@ class AppointmentController extends Controller
        
         $appointment = Appointment::findOrFail($id);
 
-        if($appointment->paymnets->sum("amount") < $request->amount){
+        if($appointment->payments->sum("amount") > $request->amount){
             return response()->json([
                 "message" => 403,
                 "message_text"=> "Los Pagos ingresados superan al nuevo monto que quiere guardar"
@@ -284,11 +290,11 @@ class AppointmentController extends Controller
 
         $appointment->update([
             "doctor_id" =>$request->doctor_id,
-            "date_appointment" => $request->date_appointment,
+            "date_appointment" => Carbon::parse($request->date_appointment)->format("Y-m-d h:i:s"),
             "speciality_id" => $request->speciality_id,
             "doctor_schedule_join_hour_id" => $request->doctor_schedule_join_hour_id,
             "amount" =>$request->amount,
-            "status_pay" =>$appointment->paymnets->sum("amount") != $request->amount ? 2 : 1,
+            "status_pay" =>$appointment->payments->sum("amount") != $request->amount ? 2 : 1,
         ]);
 
         return response()->json([

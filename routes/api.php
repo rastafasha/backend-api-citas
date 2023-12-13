@@ -55,6 +55,9 @@ Route::group(['middleware' => 'api'], function ($router) {
 
     // appointment
     require __DIR__ . '/api_routes/appointment.php';
+    
+    // appointmentpay
+    require __DIR__ . '/api_routes/appointmentpay.php';
 
 
 

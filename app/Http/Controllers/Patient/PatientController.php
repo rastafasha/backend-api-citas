@@ -26,7 +26,7 @@ class PatientController extends Controller
         $patients = Patient::where(DB::raw("CONCAT(patients.name,' ', IFNULL(patients.surname,''),' ',patients.email)"),
         "like","%".$search."%"
         )->orderBy("id", "desc")
-        ->paginate(2);
+        ->paginate(20);
                     
         return response()->json([
             "total" =>$patients->total(),

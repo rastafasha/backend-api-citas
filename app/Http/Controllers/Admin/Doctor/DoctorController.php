@@ -214,22 +214,117 @@ class DoctorController extends Controller
         
         
         // ALMACENAR LA DISPONIBILIDAD DE HORARIO DEL DOCTOR
-        foreach ($user->schedule_days as $key => $schedule_day) {
-            $schedule_day->delete();
-        }
+        // foreach ($user->schedule_days as $key => $schedule_day) {
+        //     $schedule_day->delete();
+        // }
 
-        foreach ($schedule_hours as $key => $schedule_hour) {
-            if(sizeof($schedule_hour["children"]) > 0){
-                $schedule_day = DoctorScheduleDay::create([
-                    "user_id" => $user->id,
-                    "day" => $schedule_hour["day_name"],
-                ]);
+        // foreach ($schedule_hours as $key => $schedule_hour) {
+        //     if(sizeof($schedule_hour["children"]) > 0){
+        //         $schedule_day = DoctorScheduleDay::create([
+        //             "user_id" => $user->id,
+        //             "day" => $schedule_hour["day_name"],
+        //         ]);
     
-                foreach ($schedule_hour["children"] as $children) {
-                    DoctorScheduleJoinHour::create([
-                        "doctor_schedule_day_id" => $schedule_day->id,
-                        "doctor_schedule_hour_id" => $children["item"]["id"],
+        //         foreach ($schedule_hour["children"] as $children) {
+        //             DoctorScheduleJoinHour::create([
+        //                 "doctor_schedule_day_id" => $schedule_day->id,
+        //                 "doctor_schedule_hour_id" => $children["item"]["id"],
+        //             ]);
+        //         }
+        //     }
+        // }
+
+         // VAMOS A COMPROBAR SI TODO SIGUE IGUAL O SI SE HA BORRADO ALGUN DIA
+         foreach ($user->schedule_days as $key => $schedule_day) {
+            // DEFINIMOS UNA BANDERA PARA PODER SABER SI BORRADO UN DIA : TRUE - EXISTE / FALSE - ELIMINADO
+            $is_exists_schedule_day = false;
+            // DE LO LLENADOS EN EL HORARIO DEL DOCTOR ITERAMOS PARA HACER LA COMPROBACIÓN
+            foreach ($schedule_hours as $key => $schedule_hour) {
+                // COMPROBAMOS QUE HAY SEGMENTOS SELECCIONADOS
+                if(sizeof($schedule_hour["children"]) > 0){
+                    if($schedule_day->day == $schedule_hour["day_name"]){
+                        // SI HAY UNA COINCIDENCIA ENTONCES EL DIA QUE TENEMOS REGISTRADO ES EL MISMO QUE ESTAMOS
+                        // ENVIANDO EN EL FRONTED , ESTO NOS SIRVE PARA NO TENER QUE ELIMINARLO SINO QUE SIGA
+                        // SU FUNCIONAMIENTO
+                        $is_exists_schedule_day = true;
+                    }
+                    if($is_exists_schedule_day){
+                        // AHORA TENEMOS QUE COMPROBAR DE ESE DIA SI SUS SEGMENTOS ESTAN CORRECTOS Y NO
+                        // HAN ELIMINADO NINGUNO
+                        foreach ($schedule_day->schedules_hours as $schedules_hour) {
+                            // DEFINIMOS UNA BANDERA PARA PODER SABER SI BORRADO UN SEGMENTO : TRUE - EXISTE / FALSE - ELIMINADO
+                            $is_exists_schedules_hour = false;
+                            // SEGMENTOS SELECCIONADOS
+                            foreach ($schedule_hour["children"] as $children) {
+                                if($schedules_hour->doctor_schedule_hour_id == $children["item"]["id"]){
+                                    $is_exists_schedules_hour = true;
+                                    break;
+                                }
+                            }
+                            if(!$is_exists_schedules_hour){
+                                $schedules_hour->delete();
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            if(!$is_exists_schedule_day){
+                // AL NO EXISTIR EL DIA TENEMOS QUE ELIMINAR TANTO LOS SEGMENTOS COMO EL DIA EN SI
+                foreach ($schedule_day->schedules_hours as $schedules_hour) {
+                    $schedules_hour->delete();
+                }
+                $schedule_day->delete();
+            }
+        }
+        // VAMOS A COMPROBAR SI TODO ESTA IGUAL A LO QUE MANDAMOS O SI SE HA AGREGADO ALGUN DIA
+        foreach ($schedule_hours as $key => $schedule_hour) {
+            // COMPROBAMOS QUE HAY SEGMENTOS SELECCIONADOS
+            if(sizeof($schedule_hour["children"]) > 0){
+                $is_exists_schedule_day = false;
+                // DE LOS REGISTROS QUE TENEMOS DISPONIBLES EN LA BD
+                foreach ($user->schedule_days as $key => $schedule_day) {
+                    if($schedule_day->day == $schedule_hour["day_name"]){
+                         // SI HAY UNA COINCIDENCIA ENTONCES EL DIA QUE TENEMOS REGISTRADO ES EL MISMO QUE ESTAMOS
+                        // ENVIANDO EN EL FRONTED , ESTO NOS SIRVE PARA NO TENER QUE AGREGAR SINO QUE SIGA
+                        // SU FUNCIONAMIENTO
+                        $is_exists_schedule_day = true;
+                        // break;
+                    }
+                    if($is_exists_schedule_day){
+                        // AHORA TENEMOS QUE COMPROBAR DE ESE DIA SI SUS SEGMENTOS ESTAN CORRECTOS Y NO
+                        // HAN AGREGADO NINGUNO
+                        foreach ($schedule_hour["children"] as $children) {
+                            $is_exists_schedules_hour = false;
+                            foreach ($schedule_day->schedules_hours as $schedules_hour) {
+                                if($schedules_hour->doctor_schedule_hour_id == $children["item"]["id"]){
+                                    $is_exists_schedules_hour = true;
+                                    break;
+                                }
+                            }
+                            if(!$is_exists_schedules_hour){
+                                DoctorScheduleJoinHour::create([
+                                    "doctor_schedule_day_id" => $schedule_day->id,
+                                    "doctor_schedule_hour_id" => $children["item"]["id"],
+                                ]);
+                            }
+                        }
+                        break;
+                    }
+                }
+                if(!$is_exists_schedule_day){
+                    // AL NO EXISTIR EL DIA TENEMOS QUE AGREGAR TANTO LOS SEGMENTOS COMO EL DIA EN SI
+                    $schedule_day = DoctorScheduleDay::create([
+                        "user_id" => $user->id,
+                        "day" => $schedule_hour["day_name"],
                     ]);
+        
+                    foreach ($schedule_hour["children"] as $children) {
+                        DoctorScheduleJoinHour::create([
+                            "doctor_schedule_day_id" => $schedule_day->id,
+                            "doctor_schedule_hour_id" => $children["item"]["id"],
+                        ]);
+                    }
                 }
             }
         }
