@@ -182,7 +182,26 @@ class AppointmentController extends Controller
 
     }
 
-    
+    public function calendar(Request $request){
+        $speciality_id = $request->speciality_id;
+        $search_doctor = $request->search_doctor;
+        $search_patient = $request->search_patient;
+
+        $appointments = Appointment::filterAdvancePay(
+            $speciality_id, $search_doctor, $search_patient, null, null)->orderBy("id", "desc")
+        ->get();
+
+        return response()->json([
+            "appointments" => $appointments->map(function($appointment){
+                return[
+                    "id"=> $appointment->id,
+                    "title"=> "Cita Médica - ".($appointment->doctor->name.' '.$appointment->doctor->surname)." - ".$appointment->speciality->name,
+                    "start"=> Carbon::parse($appointment->date_appointment)->format("Y-m-d")."T".$appointment->doctor_schedule_join_hour->doctor_schedule_hour->hour_start,
+                    "end"=> Carbon::parse($appointment->date_appointment)->format("Y-m-d")."T".$appointment->doctor_schedule_join_hour->doctor_schedule_hour->hour_end,
+                ];
+            }),
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.

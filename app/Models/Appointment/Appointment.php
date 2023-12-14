@@ -6,10 +6,12 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Patient\Patient;
 use App\Models\Doctor\Specialitie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Appointment\AppointmentPay;
 use App\Models\Doctor\DoctorScheduleJoinHour;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Appointment\AppointmentAttention;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Appointment extends Model
@@ -25,6 +27,8 @@ class Appointment extends Model
         "user_id",
         "amount",
         "status_pay",
+        "status",
+        "date_attention",
 
     ];
 
@@ -71,6 +75,11 @@ class Appointment extends Model
         return $this->belongsTo(Specialitie::class);
     }
 
+    public function attention()
+    {
+        return $this->hasOne(AppointmentAttention::class);
+    }
+
     // relaciones
 
     // filtro buscador
@@ -102,14 +111,14 @@ class Appointment extends Model
 
         if($search_doctor){
             $query->whereHas("doctor", function($q)use($search_doctor){
-                $q->where("name", "like","%".$search_doctor."%")
-                    ->orWhere("surname", "like","%".$search_doctor."%");
+                $q->where(DB::raw("CONCAT(users.name,' ',IFNULL(users.surname,''),' ',IFNULL(users.email,''))"),"like","%".$search_doctor."%");
+                   
             });
         }
         if($search_patient){
             $query->whereHas("patient", function($q)use($search_patient){
-                $q->where("name", "like","%".$search_patient."%")
-                    ->orWhere("surname", "like","%".$search_patient."%");
+                $q->where(DB::raw("CONCAT(patients.name,' ',IFNULL(patients.surname,''),' ',IFNULL(patients.email,''))"),"like","%".$search_patient."%");
+                
             });
         }
 

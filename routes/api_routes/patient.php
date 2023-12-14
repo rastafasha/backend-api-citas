@@ -10,3 +10,4 @@ Route::get('patients/show/{id}', [PatientController::class, 'show'])->name('show
 Route::post('patients/update/{patient}', [PatientController::class, 'update'])->name('update');
 Route::delete('patients/destroy/{id}', [PatientController::class, 'destroy'])->name('destroy');
 
+Route::get('patients/profile/{id}', [PatientController::class, 'profile'])->name('profile');

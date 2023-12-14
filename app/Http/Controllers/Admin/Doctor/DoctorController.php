@@ -10,12 +10,14 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Appointment\Appointment;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Doctor\DoctorScheduleDay;
 use App\Http\Resources\User\UserResource;
 use App\Models\Doctor\DoctorScheduleHour;
 use App\Http\Resources\User\UserCollection;
 use App\Models\Doctor\DoctorScheduleJoinHour;
+use App\Http\Resources\Appointment\AppointmentCollection;
 
 class DoctorController extends Controller
 {
@@ -82,9 +84,51 @@ class DoctorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function profile($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $num_appointment = Appointment::where("doctor_id",$id)->count();
+        $money_of_appointments = Appointment::where("doctor_id",$id)->sum("amount");
+        $num_appointment_pendings = Appointment::where("doctor_id",$id)->where("status",1)->count();
+        $appointment_pendings = Appointment::where("doctor_id",$id)->where("status",1)->get();
+        $appointments = Appointment::where("doctor_id",$id)->get();
+
+        return response()->json([
+            "num_appointment"=>$num_appointment,
+            "money_of_appointments"=> $money_of_appointments,
+            "num_appointment_pendings"=>$num_appointment_pendings,
+            "doctor" => UserResource::make($user),
+            "appointment_pendings"=> AppointmentCollection::make($appointment_pendings),
+            "appointments"=>$appointments->map(function($appointment){
+                return [
+                    "id"=> $appointment->id,
+                    "patient"=> [
+                        "id"=> $appointment->patient->id,
+                        "full_name"=> $appointment->patient->name.' '.$appointment->patient->surname,
+                        "avatar"=> $appointment->patient->avatar ? env("APP_URL")."storage/".$appointment->patient->avatar : 'https://cdn-icons-png.flaticon.com/512/1430/1430453.png',
+                    ],
+                    "doctor"=> [
+                        "id"=> $appointment->doctor->id,
+                        "full_name"=> $appointment->doctor->name.' '.$appointment->doctor->surname,
+                        "avatar"=> $appointment->doctor->avatar ? env("APP_URL")."storage/".$appointment->doctor->avatar : NULL,
+                    ],
+                    "date_appointment" =>$appointment->date_appointment,
+                    "date_appointment_format" =>Carbon::parse($appointment->date_appointment)->format("d M Y"),
+                    "format_hour_start" => Carbon::parse(date("Y-m-d").' '.$appointment->doctor_schedule_join_hour->doctor_schedule_hour->hour_start)->format("h:i A") ,
+                    "format_hour_end" => Carbon::parse(date("Y-m-d").' '.$appointment->doctor_schedule_join_hour->doctor_schedule_hour->hour_end)->format("h:i A"),
+                    "appointment_attention"=> $appointment->attention ?[
+                        "id"=>$appointment->attention->id,
+                        "description"=>$appointment->attention->description,
+                        "receta_medica"=>$appointment->attention->receta_medica ? json_decode($appointment->attention->receta_medica) : [],
+                        "created_at" => $appointment->attention->created_at->format("Y-m-d h:i A"),
+                    ]: NULL,
+                    "amount" =>$appointment->amount,
+                    "status_pay" =>$appointment->status_pay,
+                    "status" =>$appointment->status,
+                ];
+            }),
+        ]);
     }
 
     /**
@@ -251,18 +295,18 @@ class DoctorController extends Controller
                     if($is_exists_schedule_day){
                         // AHORA TENEMOS QUE COMPROBAR DE ESE DIA SI SUS SEGMENTOS ESTAN CORRECTOS Y NO
                         // HAN ELIMINADO NINGUNO
-                        foreach ($schedule_day->schedules_hours as $schedules_hour) {
+                        foreach ($schedule_day->schedule_hours as $schedule_hour) {
                             // DEFINIMOS UNA BANDERA PARA PODER SABER SI BORRADO UN SEGMENTO : TRUE - EXISTE / FALSE - ELIMINADO
-                            $is_exists_schedules_hour = false;
+                            $is_exists_schedule_hour = false;
                             // SEGMENTOS SELECCIONADOS
                             foreach ($schedule_hour["children"] as $children) {
-                                if($schedules_hour->doctor_schedule_hour_id == $children["item"]["id"]){
-                                    $is_exists_schedules_hour = true;
+                                if($schedule_hour->doctor_schedule_hour_id == $children["item"]["id"]){
+                                    $is_exists_schedule_hour = true;
                                     break;
                                 }
                             }
-                            if(!$is_exists_schedules_hour){
-                                $schedules_hour->delete();
+                            if(!$is_exists_schedule_hour){
+                                $schedule_hour->delete();
                             }
                         }
                         break;
@@ -271,8 +315,8 @@ class DoctorController extends Controller
             }
             if(!$is_exists_schedule_day){
                 // AL NO EXISTIR EL DIA TENEMOS QUE ELIMINAR TANTO LOS SEGMENTOS COMO EL DIA EN SI
-                foreach ($schedule_day->schedules_hours as $schedules_hour) {
-                    $schedules_hour->delete();
+                foreach ($schedule_day->schedule_hours as $schedule_hour) {
+                    $schedule_hour->delete();
                 }
                 $schedule_day->delete();
             }
@@ -295,14 +339,14 @@ class DoctorController extends Controller
                         // AHORA TENEMOS QUE COMPROBAR DE ESE DIA SI SUS SEGMENTOS ESTAN CORRECTOS Y NO
                         // HAN AGREGADO NINGUNO
                         foreach ($schedule_hour["children"] as $children) {
-                            $is_exists_schedules_hour = false;
-                            foreach ($schedule_day->schedules_hours as $schedules_hour) {
-                                if($schedules_hour->doctor_schedule_hour_id == $children["item"]["id"]){
-                                    $is_exists_schedules_hour = true;
+                            $is_exists_schedule_hour = false;
+                            foreach ($schedule_day->schedule_hours as $schedule_hour) {
+                                if($schedule_hour->doctor_schedule_hour_id == $children["item"]["id"]){
+                                    $is_exists_schedule_hour = true;
                                     break;
                                 }
                             }
-                            if(!$is_exists_schedules_hour){
+                            if(!$is_exists_schedule_hour){
                                 DoctorScheduleJoinHour::create([
                                     "doctor_schedule_day_id" => $schedule_day->id,
                                     "doctor_schedule_hour_id" => $children["item"]["id"],
@@ -328,6 +372,8 @@ class DoctorController extends Controller
                 }
             }
         }
+
+        
         return response()->json([
             "message" => 200
         ]);

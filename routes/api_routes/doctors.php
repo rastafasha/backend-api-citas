@@ -12,3 +12,5 @@ Route::get('doctors/show/{id}', [DoctorController::class, 'show'])->name('show')
 Route::post('doctors/update/{id}', [DoctorController::class, 'update'])->name('update');
 Route::delete('doctors/destroy/{id}', [DoctorController::class, 'destroy'])->name('destroy');
 
+Route::get('doctors/profile/{id}', [DoctorController::class, 'profile'])->name('profile');
+

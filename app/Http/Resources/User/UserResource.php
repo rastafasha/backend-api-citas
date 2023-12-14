@@ -22,7 +22,9 @@ class UserResource extends JsonResource
         $days_week["Miercoles"] = "table-success";
         $days_week["Jueves"] = "table-warning";
         $days_week["Viernes"] = "table-info";
+        $days_name = "";
         foreach ($this->resource->schedule_days as $key => $schedule_day) {
+            $days_name .= ($schedule_day->day."-");
             foreach ($schedule_day->schedule_hours as $key => $schedule_hour) {
                 $HOUR_SCHEDULES->push([
                     "day"=> [
@@ -52,10 +54,11 @@ class UserResource extends JsonResource
         return [
             "id"=>$this->resource->id,
             "name"=>$this->resource->name,
+            "surname"=>$this->resource->surname,
+            "full_name"=> $this->resource->name.' '.$this->resource->surname,
             "email"=>$this->resource->email,
             "password"=>$this->resource->password,
             "rolename"=>$this->resource->rolename,
-            "surname"=>$this->resource->surname,
             "mobile"=>$this->resource->mobile,
             "birth_date"=>$this->resource->birth_date ? Carbon::parse($this->resource->birth_date)->format("Y/m/d") : NULL,
             "gender"=>$this->resource->gender,
@@ -71,6 +74,7 @@ class UserResource extends JsonResource
             ]:NULL,
             "created_at"=>$this->resource->created_at ? Carbon::parse($this->resource->created_at)->format("Y/m/d") : NULL,
             "schedule_selecteds"=> $HOUR_SCHEDULES,
+            "days_name"=> $days_name,
         ];
     }
 }
