@@ -21,6 +21,8 @@ class PermissionsDemoSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // create permissions
+        Permission::create(['guard_name' => 'api','name' => 'admin_dashboard']);
+        Permission::create(['guard_name' => 'api','name' => 'doctor_dashboard']);
         Permission::create(['guard_name' => 'api','name' => 'register_rol']);
         Permission::create(['guard_name' => 'api','name' => 'list_rol']);
         Permission::create(['guard_name' => 'api','name' => 'edit_rol']);

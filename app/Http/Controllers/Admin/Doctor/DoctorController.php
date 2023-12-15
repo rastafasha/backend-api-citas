@@ -295,17 +295,17 @@ class DoctorController extends Controller
                     if($is_exists_schedule_day){
                         // AHORA TENEMOS QUE COMPROBAR DE ESE DIA SI SUS SEGMENTOS ESTAN CORRECTOS Y NO
                         // HAN ELIMINADO NINGUNO
-                        foreach ($schedule_day->schedule_hours as $schedule_hour) {
+                        foreach ($schedule_day->schedule_hours as $schedules_hour) {
                             // DEFINIMOS UNA BANDERA PARA PODER SABER SI BORRADO UN SEGMENTO : TRUE - EXISTE / FALSE - ELIMINADO
-                            $is_exists_schedule_hour = false;
+                            $is_exists_schedules_hour = false;
                             // SEGMENTOS SELECCIONADOS
                             foreach ($schedule_hour["children"] as $children) {
-                                if($schedule_hour->doctor_schedule_hour_id == $children["item"]["id"]){
-                                    $is_exists_schedule_hour = true;
+                                if($schedules_hour->doctor_schedule_hour_id == $children["item"]["id"]){
+                                    $is_exists_schedules_hour = true;
                                     break;
                                 }
                             }
-                            if(!$is_exists_schedule_hour){
+                            if(!$is_exists_schedules_hour){
                                 $schedule_hour->delete();
                             }
                         }

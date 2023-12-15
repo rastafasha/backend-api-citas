@@ -60,6 +60,9 @@ Route::group(['middleware' => 'api'], function ($router) {
     require __DIR__ . '/api_routes/appointmentpay.php';
     // citamedica
     require __DIR__ . '/api_routes/citamedica.php';
+    
+    // dashboard
+    require __DIR__ . '/api_routes/dashboard.php';
 
 
 
