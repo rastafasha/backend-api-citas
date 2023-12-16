@@ -63,6 +63,9 @@ Route::group(['middleware' => 'api'], function ($router) {
     
     // dashboard
     require __DIR__ . '/api_routes/dashboard.php';
+    
+    // whatsapp
+    // require __DIR__ . '/api_routes/whatsapp.php';
 
 
 

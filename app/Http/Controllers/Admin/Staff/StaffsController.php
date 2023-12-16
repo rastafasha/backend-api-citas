@@ -22,6 +22,8 @@ class StaffsController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('index', User::class);
+
         $search = $request->search;
         $users = User::where(DB::raw("CONCAT(users.name,' ',IFNULL(users.surname,''),' ',users.email)"),"like","%".$search."%")
                     // "name", "like", "%".$search."%"
@@ -47,15 +49,7 @@ class StaffsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -65,6 +59,7 @@ class StaffsController extends Controller
      */
     public function store(Request $request)
     {
+        // $this->authorize('index', User::class); 
         $user_is_valid = User::where("email", $request->email)->first();
 
         if($user_is_valid){

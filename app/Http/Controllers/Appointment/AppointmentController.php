@@ -174,6 +174,7 @@ class AppointmentController extends Controller
 
         return response()->json([
             "message"=>200,
+            "id"=>$patient->id,
             "name"=>$patient->name,
             "surname"=>$patient->surname,
             "phone"=>$patient->phone,
@@ -235,8 +236,8 @@ class AppointmentController extends Controller
         }
 
         
-        // $user = auth('api')->user();//lo coloco para saber si viene o no
-        // error_log($user);
+        $user = auth('api')->user();//lo coloco para saber si viene o no
+        error_log($user);
 
         $appointment = Appointment::create([
             "doctor_id" =>$request->doctor_id,

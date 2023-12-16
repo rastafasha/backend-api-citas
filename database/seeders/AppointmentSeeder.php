@@ -34,13 +34,13 @@ class AppointmentSeeder extends Seeder
                 AppointmentPay::create([
                     "appointment_id" => $p->id,
                     "amount" => 50,
-                    "method_payment" => $faker->randomElement(["Efectivo","Trasferencia","Pago Movil","Zelle", "T.Debito", "T.Credito"]),
+                    "method_payment" => $faker->randomElement(["Efectivo","Trasferencia","Pago Movil","Zelle","Square", "T.Debito", "T.Credito", ]),
                 ]);
             }else{
                 AppointmentPay::create([
                     "appointment_id" => $p->id,
                     "amount" => $p->amount,
-                    "method_payment" => $faker->randomElement(["Efectivo","Trasferencia","Pago Movil","Zelle", "T.Debito", "T.Credito"]),
+                    "method_payment" => $faker->randomElement(["Efectivo","Trasferencia","Pago Movil","Zelle","Square", "T.Debito", "T.Credito"]),
                 ]);
             }
         });

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use App\Models\Appointment\Appointment;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Doctor\DoctorScheduleDay;
@@ -86,15 +87,19 @@ class DoctorController extends Controller
      */
     public function profile($id)
     {
-        $user = User::findOrFail($id);
+        $cachedRecord = Redis::get('profile_doctor_#'.$id);
+        $data_doctor = [];
+        if(isset($cachedRecord)) {
+            $data_doctor = json_decode($cachedRecord, FALSE);
+        }else{
+            $user = User::findOrFail($id);
 
         $num_appointment = Appointment::where("doctor_id",$id)->count();
         $money_of_appointments = Appointment::where("doctor_id",$id)->sum("amount");
         $num_appointment_pendings = Appointment::where("doctor_id",$id)->where("status",1)->count();
         $appointment_pendings = Appointment::where("doctor_id",$id)->where("status",1)->get();
         $appointments = Appointment::where("doctor_id",$id)->get();
-
-        return response()->json([
+        $data_doctor = [
             "num_appointment"=>$num_appointment,
             "money_of_appointments"=> $money_of_appointments,
             "num_appointment_pendings"=>$num_appointment_pendings,
@@ -128,7 +133,12 @@ class DoctorController extends Controller
                     "status" =>$appointment->status,
                 ];
             }),
-        ]);
+        ];
+            
+            Redis::set('profile_doctor_#'.$id, json_encode($data_doctor),'EX', 3600);
+        }
+        
+        return response()->json($data_doctor);
     }
 
     /**
@@ -244,6 +254,11 @@ class DoctorController extends Controller
         $date_clean = preg_replace('/\(.*\)|[A-Z]{3}-\d{4}/', '',$request->birth_date );
         
         $request->request->add(["birth_date" => Carbon::parse($date_clean)->format('Y-m-d h:i:s')]);
+
+        $cachedRecord = Redis::get('profile_doctor_#'.$id);
+        if(isset($cachedRecord)) {
+            Redis::del('profile_doctor_#'.$id);
+        }
 
         $user->update($request->all());
         
@@ -388,6 +403,10 @@ class DoctorController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
+        $cachedRecord = Redis::get('profile_doctor_#'.$id);
+        if(isset($cachedRecord)) {
+            Redis::del('profile_doctor_#'.$id);
+        }
         $user->delete();
         return response()->json([
             "message" => 200

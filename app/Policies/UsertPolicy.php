@@ -18,7 +18,12 @@ class UsertPolicy
     public function index(User $userAuth) {
 
         // return $userAuthAuth->role == "ADMIN";
-        return in_array($userAuth->role, [$userAuth->role == "SUPERADMIN", "ADMIN", "GUEST", "MEMBER"]);
+        return in_array($userAuth->role, [$userAuth->role == "SUPERADMIN"]);
+        
+        // if($user->can('list_staff')){
+        //     return false;
+        // }
+        // return false;
 
     }
 
@@ -31,7 +36,7 @@ class UsertPolicy
     public function userShow(User $userAuth, User $user) {
 
         // return in_array($userAuth->role, [$userAuth->role == "ADMIN"]);
-        return in_array($user->role, [$user->role == "SUPERADMIN", "ADMIN", "GUEST", "MEMBER"]);
+        return in_array($user->role, [$user->role == "SUPERADMIN"]);
 
     }
 
@@ -45,7 +50,7 @@ class UsertPolicy
     public function userUpdate(User $userAuth, User $user) {
 
         // return in_array($userAuth->role, [$userAuth->role == "SUPERADMIN"]);
-        return in_array($user->role, [$user->role == "SUPERADMIN", "ADMIN", "GUEST", "MEMBER"]);
+        return in_array($user->role, [$user->role == "SUPERADMIN"]);
 
     }
 
@@ -58,7 +63,7 @@ class UsertPolicy
     public function userDestroy(User $userAuth, User $user) {
 
         // return in_array($userAuth->role, [$userAuth->role == "SUPERADMIN"]);
-        return in_array($user->role, [$user->role == "SUPERADMIN", "ADMIN"]);
+        return in_array($user->role, [$user->role == "SUPERADMIN"]);
 
     }
 
@@ -70,7 +75,7 @@ class UsertPolicy
      */
     public function indexDeletes(User $userAuth) {
 
-        return $userAuth->role == "ADMIN";
+        return $userAuth->role == "SUPERADMIN";
 
     }
 
@@ -82,7 +87,7 @@ class UsertPolicy
      */
     public function userDeleteShow(User $userAuth, User $user) {
 
-        return in_array($userAuth->role, [$userAuth->role == "ADMIN"]);
+        return in_array($userAuth->role, [$userAuth->role == "SUPERADMIN"]);
 
     }
 
