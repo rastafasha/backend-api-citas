@@ -26,8 +26,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
 
-        $schedule->command('command:notification-appointments')->timezone('America/Caracas')->everyFiveMinutes();
-        $schedule->command('command:notification-appointment-whatsapp')->timezone('America/Caracas')->everyFiveMinutes();
+        $schedule->command('command:notification-appointments')->timezone('America/Caracas')->everyMinutes();
+        $schedule->command('command:notification-appointment-whatsapp')->timezone('America/Caracas')->everyMinutes();
     }
 
     /**

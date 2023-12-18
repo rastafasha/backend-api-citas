@@ -93,6 +93,11 @@ Route::group(['middleware' => 'api'], function ($router) {
         return "Migrate seed";
     });
 
+    Route::get('/send-notification', function () {
+        Artisan::call('command:notification-appointments');
+        return "Send All notifications";
+    });
+
 
     //rutas libres
 

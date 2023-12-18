@@ -15,9 +15,23 @@ class DoctorPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAnyDoctor(User $user)
     {
-        //
+        // error_log($user);
+
+        // dd("Ya");
+       if($user->can('list_doctor')){
+        return false;
+       }
+       return false;
+    }
+    public function profileDoctor(User $user)
+    {
+        error_log($user);
+       if($user->can('profile_doctor')){
+        return false;
+       }
+       return false;
     }
 
     /**
@@ -27,9 +41,12 @@ class DoctorPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, User $model)
+    public function viewDoctor(User $user, User $model)
     {
-        //
+        if($user->can('edit_doctor')){
+            return false;
+           }
+           return false;
     }
 
     /**
@@ -38,9 +55,12 @@ class DoctorPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function createDoctor(User $user)
     {
-        //
+        if($user->can('register_doctor')){
+            return false;
+           }
+           return false;
     }
 
     /**
@@ -50,9 +70,12 @@ class DoctorPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, User $model)
+    public function updateDoctor(User $user, User $model)
     {
-        //
+        if($user->can('edit_doctor')){
+            return false;
+           }
+           return false;
     }
 
     /**
@@ -64,7 +87,10 @@ class DoctorPolicy
      */
     public function delete(User $user, User $model)
     {
-        //
+        if($user->can('delet_doctor')){
+            return false;
+           }
+           return false;
     }
 
     /**

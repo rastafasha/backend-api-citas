@@ -29,6 +29,7 @@ class Appointment extends Model
         "status_pay",
         "status",
         "date_attention",
+        "cron_state",
 
     ];
 

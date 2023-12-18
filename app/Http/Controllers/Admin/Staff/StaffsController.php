@@ -22,7 +22,9 @@ class StaffsController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('index', User::class);
+        // if(!auth('api')->user()->can('list_staff')){
+        //     return response()->json(["message"=>"El usuario no esta autenticado"],403);
+        //    }
 
         $search = $request->search;
         $users = User::where(DB::raw("CONCAT(users.name,' ',IFNULL(users.surname,''),' ',users.email)"),"like","%".$search."%")
@@ -150,7 +152,7 @@ class StaffsController extends Controller
         }
         
         if($request->password){
-            $request->request->add(["password"=>bycript($request->password)]);
+            $request->request->add(["password"=>Hash::make($request->password)]);
         }
 
         if($request->birth_date){

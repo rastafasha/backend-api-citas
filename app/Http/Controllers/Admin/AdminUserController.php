@@ -27,8 +27,15 @@ class AdminUserController extends Controller
      */
     public function index()
     {
-        // $this->authorize('index', User::class);
 
+        // dd(!auth('api')->user()->can('list_staff'));
+        // if(!auth('api')->user()->can('list_staff')){
+        //     return response()->json(["message"=>"El usuario no esta autenticado"],403);
+        //    }
+        // if(!auth('api')->user()->can('list_doctor')){
+        //     return response()->json(["message"=>"El usuario no esta autenticado"],403);
+        //    }
+        
         $users = User::select([
             "id", "name", "email", "rolename"
         ])
@@ -55,7 +62,7 @@ class AdminUserController extends Controller
      */
     public function userShow(User $user)
     {
-        // $this->authorize('userShow', User::class);
+        // $this->authorize('view', User::class);
 
         if (!$user) {
             return response()->json([
@@ -88,7 +95,7 @@ class AdminUserController extends Controller
      */
     public function userUpdate(UserUpdateRequest $request, User $user)
     {
-        // $this->authorize('userUpdate', User::class);
+        // $this->authorize('update', User::class);
 
         try {
             DB::beginTransaction();
@@ -119,8 +126,8 @@ class AdminUserController extends Controller
      */
     public function userDestroy(User $user)
     {
-        // $this->authorize('userDestroy', User::class);
-
+        // $this->authorize('delete', User::class);
+        
         try {
             DB::beginTransaction();
 
