@@ -40,8 +40,8 @@ class NotificationAppointmentWhatsapp extends Command
     public function handle()
     {
         date_default_timezone_set('America/Caracas');
-        $simulate_hour_number =date("2023-12-15 8:35:35"); //strtotime(date("2023-12-15 8:00:35"));
-        $appointments = Appointment::whereDate("date_appointment", "2023-12-15")//now()->format("Y-m-d")
+        $simulate_hour_number =date("2023-12-20 08:30:00"); //strtotime(date("2023-12-15 8:00:35"));
+        $appointments = Appointment::whereDate("date_appointment", "2023-12-20")//now()->format("Y-m-d")
                                     ->where("status",1)
                                     ->get();  
 
@@ -53,14 +53,17 @@ class NotificationAppointmentWhatsapp extends Command
             $hour_start = $appointment->doctor_schedule_join_hour->doctor_schedule_hour->hour_start;
             $hour_end = $appointment->doctor_schedule_join_hour->doctor_schedule_hour->hour_end;
             
-            $hour_start = strtotime(Carbon::parse(date("Y-m-d")." ".$hour_start)->subHour());
-            $hour_end = strtotime(Carbon::parse(date("Y-m-d")." ".$hour_end)->subHour());
+            // $hour_start = strtotime(Carbon::parse(date("Y-m-d")." ".$hour_start)->subHour());
+            // $hour_end = strtotime(Carbon::parse(date("Y-m-d")." ".$hour_end)->subHour());
+            $hour_start = strtotime(Carbon::parse(date("2023-12-20")." ".$hour_start)->subHour());
+            $hour_end = strtotime(Carbon::parse(date("2023-12-20")." ".$hour_end)->subHour());
             // error_log($hour_start.' '.$hour_end.' '.$simulate_hour_number );
             if( $hour_start <= $now_time_number && $hour_end >= $now_time_number ){
                 $patients->push([
                     "name"=> $appointment->patient->name,
                     "surname"=> $appointment->patient->surname,
-                    "avatar"=> $appointment->avatar ? env("APP_URL")."storage/".$this->resource->avatar : null,
+                    "avatar"=> $appointment->avatar ? env("APP_URL").$this->resource->avatar : null,
+                    // "avatar"=> $appointment->avatar ? env("APP_URL")."storage/".$this->resource->avatar : null,
                     "email"=> $appointment->patient->email,
                     "speciality_name"=> $appointment->speciality->name,
                     "doctor_full_name"=> $appointment->doctor->name.' '.$appointment->doctor->surname,
@@ -73,13 +76,13 @@ class NotificationAppointmentWhatsapp extends Command
         }
 
         foreach ($patients as $key => $patient) {
-            $accessToken = 'EAAFQqJKpYMkBOxNIdWvoqssP99X8EXTiwXNZAZCj3o5mGrRAqBRrogJExb5KW6izK8iNQWL1fhZCzOeve9GFv0wN0PTaRntfk2ihLHvlBkGSSZAngBvqXJEEYatRSFikbOSCurEz9EH5ZBoROFE4ZCXtYoBpO2mUCHSl0YZCZASeV0F4hJ9fNJuR6WO3mCBsotfbix6lif9oY6P5PPbeSrLB2Dz49DiRm87i';
+            $accessToken = 'XXXXXX';
          
-            $fbApiUrl = 'https://graph.facebook.com/v17.0/XXXXXXXXXXXXXXXXX/messages';
+            $fbApiUrl = 'https://graph.facebook.com/v17.0/XXXXXX/messages';
             
             $data = [
                 'messaging_product' => 'whatsapp',
-                'to' => 'xxxxxxxxxxxxxxx',
+                'to' => 'XXXXXX',
                 'type' => 'template',
                 'template' => [
                     'name' => 'recordatorio',

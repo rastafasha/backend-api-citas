@@ -161,21 +161,21 @@
 																											<tr>
 																												<td class="py-35 px-50 mpx-15" style="border-radius: 10px; padding-top: 35px; padding-bottom: 35px; padding-left: 50px; padding-right: 50px;" bgcolor="#f4ecfa">
 																													<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																														<tr>
-																															<td>
-																																<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: -90px;">
-																																	<tr>
-																																		<td class="img-center pb-20" style="font-size:0pt; line-height:0pt; text-align:center; padding-bottom: 20px;">
-																																			@if($patient ["avatar"])
-                              <!--                                                                                                              <img src="{{$patient ['avatar']}}" width="110" height="110" editable="true" border="0" alt="" />
-                                                                                                                                           @else
-                                                                                                                                           <img src="https://citasmedicas.malcolmcordova.com/backend-api-citas/storage/app/public/no-image.jpg" width="110" height="110" editable="true" border="0" alt="" />
-                                                                                                                                           @endif
-																																		</td>
-																																	</tr>
-																																</table>
-																															</td>
-																														</tr>
+																														<!--<tr>-->
+																														<!--	<td>-->
+																														<!--		<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: -90px;">-->
+																														<!--			<tr>-->
+																														<!--				<td class="img-center pb-20" style="font-size:0pt; line-height:0pt; text-align:center; padding-bottom: 20px;">-->
+																														<!--					@if($patient ["avatar"])-->
+                              <!--                                                                                                              <img src="https://citasmedicas.malcolmcordova.com/backend-api-citas/storage/app/public/{{$patient ['avatar']}}" width="110" height="110" editable="true" border="0" alt="" />-->
+                              <!--                                                                                                              @else-->
+                              <!--                                                                                                              <img src="https://citasmedicas.malcolmcordova.com/backend-api-citas/storage/app/public/no-image.jpg" width="110" height="110" editable="true" border="0" alt="" />-->
+                              <!--                                                                                                              @endif-->
+																														<!--				</td>-->
+																														<!--			</tr>-->
+																														<!--		</table>-->
+																														<!--	</td>-->
+																														<!--</tr>-->
 																														<tr>
 																															<td class="text-18 a-center c-purple pb-15" style="font-size:18px; line-height:22px; font-family:'PT Sans', Arial, sans-serif; min-width:auto !important; text-align:center; color:#9128df; padding-bottom: 15px;">
 																																<multiline>
@@ -285,7 +285,7 @@
 																				
 																				<td class="img" width="117" style="font-size:0pt; line-height:0pt; text-align:center; ">
                                                                                     
-																					<a href="https://malcolmcordova.com/" target="_blank"><img src="https://citasmedicas.malcolmcordova.com/logotipo.png" width="150" height="40" editable="true" border="0" alt="" /></a>
+																					<a href="https://malcolmcordova.com/" target="_blank"><img src="https://citasmedicas.malcolmcordova.com/logotipo.png" width="117" height="40" editable="true" border="0" alt="" /></a>
 																				</td>
 																			</tr>
 																		</table>
