@@ -42,7 +42,7 @@ class AppointmentRegisterJob implements ShouldQueue
     public function handle()
     {
         try {
-            Mail::to('mercadocreativo@gmail.com')
+            Mail::to('citasmedicas@malcolmcordova.com')
                 ->send(
                     new NewAppointmentRegisterMail(
                     $this->patient,

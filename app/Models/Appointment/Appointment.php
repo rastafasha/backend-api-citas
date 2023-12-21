@@ -47,7 +47,7 @@ class Appointment extends Model
             //     $patient
             // )->onQueue("high");
 
-        Mail::to('mercadocreativo@gmail.com')->send(new NewAppointmentRegisterMail($patient));
+        Mail::to('citasmedicas@malcolmcordova.com')->send(new NewAppointmentRegisterMail($patient));
 
         });
     }

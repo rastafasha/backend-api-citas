@@ -119,7 +119,7 @@
 																	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 																		<tr>
 																			<td class="img-center p-30 px-15" style="font-size:0pt; line-height:0pt; text-align:center; padding: 30px; padding-left: 15px; padding-right: 15px;">
-																				<a href="#" target="_blank"><img src="../images/logo.png" width="112" height="43" editable="true" border="0" alt="" /></a>
+																				<a href="#" target="_blank"><img src="https://malcolmcordova.com/Firma_files/logotipo.png" width="150" height="43" editable="true" border="0" alt="" /></a>
 																			</td>
 																		</tr>
 																	</table>
@@ -134,11 +134,7 @@
 																					<tr>
 																						<td class="pb-50" style="padding-bottom: 50px;">
 																							<table width="100%" border="0" cellspacing="0" cellpadding="0">
-																								<tr>
-																									<td class="fluid-img img-center pb-50" style="font-size:0pt; line-height:0pt; text-align:center; padding-bottom: 50px;">
-																										<img src="../images/img_intro_13.png" width="300" height="252" editable="true" border="0" alt="" />
-																									</td>
-																								</tr>
+																								
 																								<tr>
 																									<td class="title-36 a-center pb-15" style="font-size:36px; line-height:40px; color:#282828; font-family:'PT Sans', Arial, sans-serif; min-width:auto !important; text-align:center; padding-bottom: 15px;">
 																										<multiline>
@@ -197,9 +193,10 @@
 																														<tr>
 																															<td class="text-16" style="font-size:16px; line-height:20px; color:#6e6e6e; font-family:'PT Sans', Arial, sans-serif; text-align:left; min-width:auto !important;">
 																																<multiline>
-																																	{{$appointment ["name"].'' .$appointment ["surname"]}}
+																																	
+																																<strong>Nombre del Paciente: </strong>
 																																	<br />
-																																	<!-- 3409 S. Canondale Road  -->
+																																	{{$appointment->patient->name.''.$appointment->patient->surname}}
 																																	<br />
 																																	<!-- Chicago, IL 60301 -->
 																																</multiline>
@@ -220,11 +217,15 @@
 																														<tr>
 																															<td class="text-16" style="font-size:16px; line-height:20px; color:#6e6e6e; font-family:'PT Sans', Arial, sans-serif; text-align:left; min-width:auto !important;">
 																																<multiline>
-																																<em>"Especialidad: {{$appointment ["speciality_name"]}}"</em>
+																																<em><strong>Especialidad:</strong> {{$appointment->speciality->name}}</em>
                                                                                                                                     <br>
-                                                                                                                                <em>"Hora de Inicio: {{$appointment ["hour_start_format"]}}"</em>
+                                                                                                                                <em><strong>Fecha de la cita:</strong> {{$appointment->date_appointment}}</em>
                                                                                                                                     <br>
-																																	<em>"Hora de Fin: {{$appointment ["hour_end_format"]}}"</em>
+                                                                                                                                <!-- <em>"Hora de Inicio: {{$appointment->hour_start_format}}"</em>
+                                                                                                                                    <br>
+																																	<em>"Hora de Fin: {{$appointment->hour_end_format}}"</em>
+																																	<br> -->
+                                                                                                                                <em><strong>creada:</strong> {{$appointment->created_at}}</em>
 																																</multiline>
 																															</td>
 																														</tr>
@@ -270,7 +271,8 @@
 																														<tr>
 																															<td class="text-16" style="font-size:16px; line-height:20px; color:#6e6e6e; font-family:'PT Sans', Arial, sans-serif; text-align:left; min-width:auto !important;">
 																																<multiline>
-																																	Pypal
+																																{{$appointment->method_payment}}
+																																
 																																</multiline>
 																															</td>
 																														</tr>
@@ -285,39 +287,13 @@
 																																	<tr>
 																																		<td class="title-20 lh-30 a-right mt-left mw-auto" width="100" style="font-size:20px; color:#282828; font-family:'PT Sans', Arial, sans-serif; min-width:auto !important; line-height: 30px; text-align:right;">
 																																			<multiline>
-																																				<strong>Subtotal:</strong>
+																																				<strong>Cita:</strong>
 																																			</multiline>
 																																		</td>
 																																		<td class="img mw-15" width="20" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
 																																		<td class="title-20 lh-30 mt-right" style="font-size:20px; color:#282828; font-family:'PT Sans', Arial, sans-serif; text-align:left; min-width:auto !important; line-height: 30px;">
 																																			<multiline>
-																																				$0.00
-																																			</multiline>
-																																		</td>
-																																	</tr>
-																																	<tr>
-																																		<td class="title-20 lh-30 a-right mt-left" style="font-size:20px; color:#282828; font-family:'PT Sans', Arial, sans-serif; min-width:auto !important; line-height: 30px; text-align:right;">
-																																			<multiline>
-																																				<strong>Shipping:</strong>
-																																			</multiline>
-																																		</td>
-																																		<td class="img mw-15" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
-																																		<td class="title-20 lh-30 mt-right" style="font-size:20px; color:#282828; font-family:'PT Sans', Arial, sans-serif; text-align:left; min-width:auto !important; line-height: 30px;">
-																																			<multiline>
-																																				$0.00
-																																			</multiline>
-																																		</td>
-																																	</tr>
-																																	<tr>
-																																		<td class="title-20 lh-30 a-right mt-left" style="font-size:20px; color:#282828; font-family:'PT Sans', Arial, sans-serif; min-width:auto !important; line-height: 30px; text-align:right;">
-																																			<multiline>
-																																				<strong>Tax:</strong>
-																																			</multiline>
-																																		</td>
-																																		<td class="img mw-15" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
-																																		<td class="title-20 lh-30 mt-right" style="font-size:20px; color:#282828; font-family:'PT Sans', Arial, sans-serif; text-align:left; min-width:auto !important; line-height: 30px;">
-																																			<multiline>
-																																				$0.00
+																																				${{$appointment->amount}}
 																																			</multiline>
 																																		</td>
 																																	</tr>
@@ -332,7 +308,7 @@
 																																		<td class="btn-20 btn-secondary c-white l-white" bgcolor="#f3189e" style="font-size:20px; line-height:24px; mso-padding-alt:15px 35px; font-family:'PT Sans', Arial, sans-serif; text-align:center; font-weight:bold; text-transform:uppercase; min-width:auto !important; border-radius:10px; background:linear-gradient(to right, #9028df 0%,#f3189e 100%); color:#ffffff;">
 																																			<multiline>
 																																				<a href="#" target="_blank" class="link c-white" style="display: block; padding: 15px 35px; text-decoration:none; color:#ffffff;">
-																																					<span class="link c-white" style="text-decoration:none; color:#ffffff;">TOTAL: ${{$appointment->total}}</span>
+																																					<span class="link c-white" style="text-decoration:none; color:#ffffff;">TOTAL PAGADO: ${{$appointment->amount_add}}</span>
 																																				</a>
 																																			</multiline>
 																																		</td>
@@ -359,13 +335,13 @@
 																								<tr>
 																									<td class="text-16 lh-26 a-center pb-25" style="font-size:16px; color:#6e6e6e; font-family:'PT Sans', Arial, sans-serif; min-width:auto !important; line-height: 26px; text-align:center; padding-bottom: 25px;">
 																										<multiline>
-																											<em>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </em>
+																											<em>Gracias por haber pautado una cita con nosotros, estaremos recordandole la cita una hora antes. </em>
 																										</multiline>
 																									</td>
 																								</tr>
-																								<tr>
+																								<!-- <tr>
 																									<td align="center">
-																										<!-- Button -->
+																										Button
 																										<table border="0" cellspacing="0" cellpadding="0" style="min-width: 200px;">
 																											<tr>
 																												<td class="btn-16 c-white l-white" bgcolor="#f3189e" style="font-size:16px; line-height:20px; mso-padding-alt:15px 35px; font-family:'PT Sans', Arial, sans-serif; text-align:center; font-weight:bold; text-transform:uppercase; border-radius:25px; min-width:auto !important; color:#ffffff;">
@@ -377,9 +353,9 @@
 																												</td>
 																											</tr>
 																										</table>
-																										<!-- END Button -->
+																										END Button
 																									</td>
-																								</tr>
+																								</tr> -->
 																							</table>
 																						</td>
 																					</tr>
@@ -408,20 +384,20 @@
 																		<table border="0" cellspacing="0" cellpadding="0">
 																			<tr>
 																				<td class="img" width="34" style="font-size:0pt; line-height:0pt; text-align:left;">
-																					<a href="#" target="_blank"><img src="../images/ico_facebook.png" width="34" height="34" editable="true" border="0" alt="" /></a>
+																					<a href="https://facebok.com/" target="_blank"><img src="https://malcolmcordova.com/Firma_files/transp-facebook.png" width="34" height="34" editable="true" border="0" alt="" /></a>
 																				</td>
 																				<td class="img" width="15" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
 																				<td class="img" width="34" style="font-size:0pt; line-height:0pt; text-align:left;">
-																					<a href="#" target="_blank"><img src="../images/ico_instagram.png" width="34" height="34" editable="true" border="0" alt="" /></a>
+																					<a href="https://instagram.com/" target="_blank"><img src="https://malcolmcordova.com/Firma_files/transp-instagram.png" width="34" height="34" editable="true" border="0" alt="" /></a>
 																				</td>
 																				<td class="img" width="15" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
 																				<td class="img" width="34" style="font-size:0pt; line-height:0pt; text-align:left;">
-																					<a href="#" target="_blank"><img src="../images/ico_twitter.png" width="34" height="34" editable="true" border="0" alt="" /></a>
+																					<a href="https://twitter.com/" target="_blank"><img src="https://malcolmcordova.com/Firma_files/transp-twitter.png" width="34" height="34" editable="true" border="0" alt="" /></a>
 																				</td>
-																				<td class="img" width="15" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
+																				<!-- <td class="img" width="15" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
 																				<td class="img" width="34" style="font-size:0pt; line-height:0pt; text-align:left;">
-																					<a href="#" target="_blank"><img src="../images/ico_pinterest.png" width="34" height="34" editable="true" border="0" alt="" /></a>
-																				</td>
+																					<a href="#" target="_blank"><img src="https://malcolmcodova.com/Firma_files/pinterest.png" width="34" height="34" editable="true" border="0" alt="" /></a>
+																				</td> -->
 																			</tr>
 																		</table>
 																		<!-- END Socials -->
@@ -432,9 +408,11 @@
 																		<multiline>
 																			Address name St. 12, City Name, State, Country Name
 																			<br />
-																			<a cm_dontconvertlink href="tel:+17384796719" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">(738) 479-6719</span></a> - <a cm_dontconvertlink href="tel:+13697181973" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">(369) 718-1973</span></a>
+																			<a cm_dontconvertlink href="tel:+17384796719" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">(738) 112222</span></a> - <a cm_dontconvertlink href="tel:+13697181973" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">(369) 22233</span></a>
 																			<br />
-																			<a href="mailto:info@website.com" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">info@website.com</span></a> - <a href="www.website.com" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">www.website.com</span></a>
+																			<a href="mailto:info@website.com" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">info@website.com</span></a> - <a href="https://malcolmcordova.com" target="_blank" class="link c-white" style="text-decoration:none; color:#ffffff;"><span class="link c-white" style="text-decoration:none; color:#ffffff;">malcolmcordova.com</span></a><br>
+																			<span class="link c-white" style="text-decoration:none; color:#ffffff;">Desarrollado por:</span>
+                                                                            
 																		</multiline>
 																	</td>
 																</tr>
@@ -443,12 +421,10 @@
 																		<!-- Download App -->
 																		<table border="0" cellspacing="0" cellpadding="0">
 																			<tr>
-																				<td class="img" width="117" style="font-size:0pt; line-height:0pt; text-align:left;">
-																					<a href="#" target="_blank"><img src="../images/btn_appstore.png" width="117" height="40" editable="true" border="0" alt="" /></a>
-																				</td>
-																				<td class="img" width="15" style="font-size:0pt; line-height:0pt; text-align:left;"></td>
-																				<td class="img" width="117" style="font-size:0pt; line-height:0pt; text-align:left;">
-																					<a href="#" target="_blank"><img src="../images/btn_gplay.png" width="117" height="40" editable="true" border="0" alt="" /></a>
+																				
+																				<td class="img" width="117" style="font-size:0pt; line-height:0pt; text-align:center; ">
+                                                                                    
+																					<a href="https://malcolmcordova.com/" target="_blank"><img src="https://citasmedicas.malcolmcordova.com/logotipo.png" width="150" height="43" editable="true" border="0" alt="" /></a>
 																				</td>
 																			</tr>
 																		</table>
@@ -459,6 +435,7 @@
 														</td>
 													</tr>
 												</table>											<!-- END Footer -->
+																					<!-- END Footer -->
 											
 											
 										</td>

@@ -260,6 +260,9 @@ class DoctorController extends Controller
                 }
             }
         }
+
+        Mail::to($user->email)->send(new NewUserRegisterMail($user));
+
         return response()->json([
             "message" => 200,
             "user"=>$user

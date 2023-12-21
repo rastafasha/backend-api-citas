@@ -252,7 +252,7 @@ class AppointmentController extends Controller
             "amount" =>$request->amount,
             "status_pay" =>$request->amount != $request->amount_add ? 2 : 1,
 
-            "amount" =>$request->amount,
+            
             "patient" =>$patient ?
                 [
                     "id" =>$patient->id,
@@ -260,13 +260,9 @@ class AppointmentController extends Controller
                     "surname" =>$patient->surname,
                     "full_name" =>$patient->name.' '.$patient->surname,
                     "phone" =>$patient->phone,
+                    "email" =>$patient->email,
                 ]: NUll,
             
-            "speciality"=>$request->speciality ? 
-                [
-                    "id"=> $request->speciality->id,
-                    "name"=> $request->speciality->name,
-                ]: NULL,
         ]);
 
         AppointmentPay::create([
@@ -275,12 +271,35 @@ class AppointmentController extends Controller
             "method_payment"=>$request->method_payment,
         ]);
 
-        Mail::to($appointment->patient->email)->send(new RegisterAppointment($appointment));
+        Mail::to($appointment->patient->email)->send(new RegisterAppointment($patient));
         Mail::to($appointment->patient->email)->send(new NewAppointmentRegisterMail($appointment));
 
         return response()->json([
             "message" => 200,
             "appointment" => $appointment,
+            
+            "amount" =>$request->amount,
+            "amount_add" =>$request->amount_add,
+            "method_payment" =>$request->method_payment,
+            "date_appointment" => Carbon::parse($appointment->date_appointment)->format("Y-m-d h:i: A"),
+            "speciality"=>$appointment->speciality,
+            "speciality"=>$appointment->speciality ? 
+                [
+                    "id"=> $appointment->speciality->id,
+                    "name"=> $appointment->speciality->name,
+                ]: NULL,
+            "doctor_id" => $appointment->doctor_id,
+            // "doctor_id"=>$appointment->doctor_id ? 
+            //         [
+            //             "id"=> $appointment->doctor_id->user->id,
+            //             "full_name" =>$appointment->doctor_id->user->name.' '.$appointment->doctor_id->user->surname,
+            //         ]: NULL,
+            "patient"=>$appointment->patient_id ? 
+                    [
+                        "id"=> $appointment->patient->id,
+                        "email" =>$appointment->patient->email,
+                        "full_name" =>$appointment->patient->name.' '.$appointment->patient->surname,
+                    ]: NULL,
             
             
         ]);

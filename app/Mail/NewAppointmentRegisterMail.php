@@ -30,7 +30,7 @@ class NewAppointmentRegisterMail extends Mailable
      */
     public function build()
     {
-        return $this->from('mercadocreativo@gmail.com', 'Sistema Automatizado de Envio de Notificaciones por correo')
+        return $this->from('citasmedicas@malcolmcordova.com', 'Sistema Automatizado de Envio de Notificaciones por correo')
             ->subject('Registro de una nueva cita')
             ->markdown('emails.admin.new_appointment_register' , ['appointment' => $this->appointment]);
     }
