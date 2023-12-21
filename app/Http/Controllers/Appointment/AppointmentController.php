@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Appointment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Patient\Patient;
+use App\Mail\RegisterAppointment;
 use App\Models\Doctor\Specialitie;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Patient\PatientPerson;
 use App\Models\Appointment\Appointment;
+use App\Mail\NewAppointmentRegisterMail;
 use App\Models\Doctor\DoctorScheduleDay;
 use App\Models\Appointment\AppointmentPay;
 use App\Models\Doctor\DoctorScheduleJoinHour;
@@ -243,11 +246,27 @@ class AppointmentController extends Controller
             "doctor_id" =>$request->doctor_id,
             "patient_id" =>$patient->id,
             "date_appointment" => Carbon::parse($request->date_appointment)->format("Y-m-d h:i:s"),
-            "speciality_id" => $request->speciality_id,
+            
             "doctor_schedule_join_hour_id" => $request->doctor_schedule_join_hour_id,
             "user_id" => auth("api")->user()->id,
             "amount" =>$request->amount,
             "status_pay" =>$request->amount != $request->amount_add ? 2 : 1,
+
+            "amount" =>$request->amount,
+            "patient" =>$patient ?
+                [
+                    "id" =>$patient->id,
+                    "name" =>$patient->name,
+                    "surname" =>$patient->surname,
+                    "full_name" =>$patient->name.' '.$patient->surname,
+                    "phone" =>$patient->phone,
+                ]: NUll,
+            
+            "speciality"=>$request->speciality ? 
+                [
+                    "id"=> $request->speciality->id,
+                    "name"=> $request->speciality->name,
+                ]: NULL,
         ]);
 
         AppointmentPay::create([
@@ -256,8 +275,13 @@ class AppointmentController extends Controller
             "method_payment"=>$request->method_payment,
         ]);
 
+        Mail::to($appointment->patient->email)->send(new RegisterAppointment($appointment));
+        Mail::to($appointment->patient->email)->send(new NewAppointmentRegisterMail($appointment));
+
         return response()->json([
             "message" => 200,
+            "appointment" => $appointment,
+            
             
         ]);
     }

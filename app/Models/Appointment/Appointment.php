@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\Patient\Patient;
 use App\Models\Doctor\Specialitie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Model;
+use App\Mail\NewAppointmentRegisterMail;
 use App\Models\Appointment\AppointmentPay;
 use App\Models\Doctor\DoctorScheduleJoinHour;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,6 +34,23 @@ class Appointment extends Model
         "cron_state",
 
     ];
+
+    //notificaciones
+
+    protected static function boot(){
+
+        parent::boot();
+
+        static::created(function($patient){
+
+            // AppointmentRegisterJob::dispatch(
+            //     $patient
+            // )->onQueue("high");
+
+        Mail::to('mercadocreativo@gmail.com')->send(new NewAppointmentRegisterMail($patient));
+
+        });
+    }
 
     public function setCreatedAtAttribute($value)
     {
@@ -131,4 +150,6 @@ class Appointment extends Model
         }
         return $query;
     }
+
+    
 }

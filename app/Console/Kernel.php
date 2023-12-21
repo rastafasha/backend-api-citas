@@ -28,7 +28,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('command:notification-appointments')->timezone('America/Caracas')->everyMinutes();
         $schedule->command('command:notification-appointment-whatsapp')->timezone('America/Caracas')->everyMinutes();
-    }
+        $schedule->command('send:notification')
+            ->everyMinute();
+    }   
 
     /**
      * Register the commands for the application.

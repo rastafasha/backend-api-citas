@@ -9,7 +9,7 @@ Route::get('appointment/config', [AppointmentController::class, 'config'])->name
 Route::get('appointment/patient', [AppointmentController::class, 'query_patient'])->name('query_patient');
 
 Route::get('appointment', [AppointmentController::class, 'index'])->name('index');
-Route::post('appointment/store', [AppointmentController::class, 'store'])->name('store');
+Route::post('appointment/store', [AppointmentController::class, 'appointmentStore'])->name('appointment.store');
 Route::get('appointment/show/{id}', [AppointmentController::class, 'show'])->name('show');
 Route::put('appointment/update/{appointment}', [AppointmentController::class, 'update'])->name('update');
 Route::delete('appointment/destroy/{id}', [AppointmentController::class, 'destroy'])->name('destroy');
